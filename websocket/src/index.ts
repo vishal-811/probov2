@@ -31,8 +31,7 @@ function handleWebsocketMessage(message : any, ws : WebSocket){
 
    const type =  data.type;
    const stockSymbol = data.stockSymbol;
-
-   if(type === 'subscriber'){
+   if(type === 'subscribe'){
       let subscription = findSubscription(stockSymbol);
       if(!subscription){ // if there is no subscriptions for that for Stocksymbol //eg : BTC_IND not in the subscription array
                          // so firstly put that in the subscriptions array and than add the subscribers to that StockSymbol.
@@ -41,7 +40,7 @@ function handleWebsocketMessage(message : any, ws : WebSocket){
        }
        subscription.subscribers.push(ws);
    }
-   else if( type === 'unsubscriber'){
+   else if( type === 'unsubscribe'){
     let subscription = findSubscription(stockSymbol);
     if (!subscription) return;
     subscription.subscribers = subscription.subscribers.filter(subscriber => subscriber !== ws); // Remove subscriber
@@ -53,13 +52,18 @@ function handleWebsocketMessage(message : any, ws : WebSocket){
 }
 
 async function sendOrderBookData(stockSymbol : string, orderbook : object){
-    const subscription = findSubscription(stockSymbol);
-    if(subscription){
+    try {
+        const subscription = findSubscription(stockSymbol);
+         if(subscription){
         subscription.subscribers.forEach(client =>{
+            
              if(client.readyState === WebSocket.OPEN){
                 client.send(JSON.stringify(orderbook));
              }
         })
+       }
+    } catch (error) {
+        console.log(error);
     }
 }
 
