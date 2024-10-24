@@ -77,7 +77,6 @@ export function handleSell(uid : string , data : OrderServiceType){
 }
 
 
-
 // Odrer to buy
 export function handleBuy(uid : string, data : OrderServiceType){
   try {
@@ -86,20 +85,20 @@ export function handleBuy(uid : string, data : OrderServiceType){
     throw new Error( "Please provide all fields" );
   }
  
-   // Validate user balance
+// Validate user balance
 const userBalance = INR_BALANCES[userId];
 if (!userBalance) {
    throw new Error("No user exists with this userId" );
 }
  
- // Check if the user has enough INR balance to place the order
+// Check if the user has enough INR balance to place the order
 const requiredAmount = price * quantity;
 if (userBalance.balance < requiredAmount) {
   throw new Error("Insufficient balance" );
 }
 
 if (!ORDERBOOK[stockSymbol]) {
-  ORDERBOOK[stockSymbol] = { 'yes': {}, 'no': {}};
+    ORDERBOOK[stockSymbol] = { 'yes': {}, 'no': {}};
 }
 
 if(!ORDERBOOK[stockSymbol][stockType]){
@@ -189,8 +188,6 @@ else{ //if the user order is fulfilled, requiredQuantity equals to 0.
   publishMessage( `channel_${uid}`,{error : error.message});
  }
 }
-
-
 
 
 // Function to  make a reverse call

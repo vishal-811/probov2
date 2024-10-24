@@ -9,7 +9,7 @@ export interface UserBalance {
   }
 
 interface Orders {
-    [userId: string]: {quantity:number , orderType : "original" | "pseudo"};
+    [orderId: string]: {quantity:number , orderType : "original" | "pseudo"};
   }
   
   interface PriceLevel {
