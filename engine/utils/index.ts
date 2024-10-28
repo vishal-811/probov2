@@ -6,9 +6,10 @@ import { handleTradeMint } from "../controllers/tradeMint";
 import { handleGetOrderbook, handleGetWholeOrderbook} from "../controllers/getOrderbook";
 import { handlegetUserBalance, handlegetUserStockBalance } from "../controllers/getbalance";
 import { handlegetAllUserBalance, handlegetAllUserStock } from "../controllers/allbalances";
-import { handleSell } from "../controllers/OrderService";
+import { handleCancel, handleSell } from "../controllers/OrderService";
 import { handleBuy } from "../controllers/OrderService";
-import type { OrderServiceType } from "../types";
+import { handleAutoMarket } from "../controllers/automarket";
+import type { OrderCancelType, OrderServiceType } from "../types";
 
 export async function publishMessage(uid : string , response : any){
      await Publisher.publish(uid, JSON.stringify(response));
@@ -87,6 +88,14 @@ export function handleMethod(method : string , uid : string, data: string | obje
         }
         case 'order_buy' :{
                 handleBuy(uid , data as OrderServiceType);
+            break;
+        }
+        case 'auto_market' :{
+            handleAutoMarket(uid, data);
+            break;
+        }
+        case 'order_cancel' :{
+            handleCancel(uid, data as OrderCancelType);
             break;
         }
         default :{

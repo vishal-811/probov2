@@ -8,27 +8,31 @@ export interface UserBalance {
     [key: string]: UserBalance; 
   }
 
+  interface Order {
+    quantity: number;
+    orderId: string;
+    orderType: "original" | "pseudo";
+}
+
 interface Orders {
-    [orderId: string]: {quantity:number , orderType : "original" | "pseudo"};
-  }
-  
-  interface PriceLevel {
+    [userId: string]: Order[];
+}
+
+interface PriceLevel {
     total: number;
     orders: Orders;
-  }
-  
+}
 
-  
-  export interface OrderSide {
-    [price: string | number]: PriceLevel;
-  }
-  
-  export interface Orderbook {
+export interface OrderSide {
+    [price: string]: PriceLevel;
+}
+
+export interface Orderbook {
     [symbol: string]: {
-      yes: OrderSide;
-      no: OrderSide;
+        yes: OrderSide;
+        no: OrderSide;
     };
-  }
+}
   
 interface StockDetail {
     quantity: number;
@@ -75,3 +79,10 @@ interface StockDetail {
      quantity :number
   }
 
+  export interface OrderCancelType {
+    orderId : string,
+    userId : string,
+    stockSymbol : string,
+    stockType :"yes" | "no"
+    price : number
+  }
