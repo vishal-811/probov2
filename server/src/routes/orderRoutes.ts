@@ -1,6 +1,5 @@
 import express from "express";
-import { handlePubSub, randomId } from "../utils";
-import { client } from "..";
+import {  randomId, RedisManager } from "../utils";
 const router = express.Router();
 
 router.post("/sell", async (req, res) => {
@@ -11,9 +10,8 @@ router.post("/sell", async (req, res) => {
     uid: uid,
     data: { userId, stockSymbol, stockType, price, quantity },
   };
-  client.rPush("data", JSON.stringify(data));
   try {
-    const response = await handlePubSub(uid); // waiting to get the response from the pub/sub.
+    const response = await RedisManager(uid,data); // waiting to get the response from the pub/sub.
     res.json({ msg: response });
   } catch (error) {
     res.json({ msg: "Error in getting data from pub/subs" });
@@ -29,9 +27,8 @@ router.post("/buy", async (req, res) => {
     uid: uid,
     data: { userId, stockSymbol, stockType, price, quantity },
   };
-  client.rPush("data", JSON.stringify(data));
   try {
-    const response = await handlePubSub(uid); // waiting to get the response from the pub/sub.
+    const response = await RedisManager(uid,data); // waiting to get the response from the pub/sub.
     res.json({ msg: response });
   } catch (error) {
     res.json({ msg: "Error in getting data from pub/subs" });
@@ -53,9 +50,8 @@ router.post("/cancel", async (req, res) => {
       price: price,
     },
   };
-  client.rPush("data", JSON.stringify(data));
   try {
-    const response = await handlePubSub(uid);
+    const response = await RedisManager(uid, data);
     res.json({msg :response});
   } catch {
      res.json({msg:"Error in cancelling order"});
