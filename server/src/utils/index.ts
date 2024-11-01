@@ -4,7 +4,8 @@ import { Subscriber , client} from '..';
 export  function RedisManager(uid : string, data : any){
      return new Promise(async (resolve)=>{
      await Subscriber.subscribe(`channel_${uid}`,(data)=>{
-         resolve(JSON.parse(data));
+           Subscriber.unsubscribe(`channel_${uid}`);  //free the client.
+           resolve(JSON.parse(data));
        })
      await client.RPUSH("data", JSON.stringify(data)); 
     })

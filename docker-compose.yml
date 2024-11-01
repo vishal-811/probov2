@@ -1,0 +1,28 @@
+services:
+  redis:
+    image: redis
+    container_name: redis
+
+  server:
+    build:
+      context: ./server
+    container_name: servercontainer
+    depends_on:
+      - redis
+    ports:
+      - "3000:3000"
+      
+
+  engine:
+    build:
+      context: ./engine
+    container_name: engineContainer
+    depends_on:
+      - redis
+
+  websocket:
+    build:
+      context: ./websocket
+    container_name: websocketContainer
+    depends_on:
+      - redis

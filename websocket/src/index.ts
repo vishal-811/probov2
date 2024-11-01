@@ -2,19 +2,23 @@ import WebSocket, {  WebSocketServer } from "ws";
 import http from 'http';
 import { createClient } from 'redis';
 
-const server = http.createServer(function (request,response){
-     response.end("Hi there");
-})
+// const server = http.createServer(function (request,response){
+//      response.end("Hi there");
+// })
 
 const subscriptions :{
     stockSymbol : string,
     subscribers : WebSocket[]
 }[] = [];
 
-const wss = new WebSocketServer({ server });
+const wss = new WebSocketServer({port: 8080});
 
-const client = createClient();
-const subscriber = createClient();
+const client = createClient({
+    url : "redis://redis:6379"
+});
+const subscriber = createClient({
+    url : "redis://redis:6379"
+});
 
 
 function findSubscription(stockSymbol : string){
@@ -97,12 +101,13 @@ async function startServer(){
     })
     console.log("connect to redis");
   } catch (error) {
-     console.log("failed to connect to redis")
+     console.log("error", error);
+     console.log("failed to connect to redis erorrrrr")
   }
   
-  server.listen(3002, ()=>{
-     console.log("ws is listen on port 3002");
-  })
+//   server.listen(3002, ()=>{
+//      console.log("ws is listen on port 3002");
+//   })
 }
 
 startServer();

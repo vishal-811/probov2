@@ -2,9 +2,9 @@ import express from 'express'
 import { createClient } from 'redis';
 import { handleMethod } from './utils';
 const app = express();
-export const client = createClient();
-export const Publisher = createClient();
-
+export const client = createClient({
+    url: "redis://redis:6379"
+});
 
 async function handleDataFromQueue(response : any){
      const Rawdata  = response?.element;
@@ -26,8 +26,8 @@ async function popFromqueue(){
 async function startServer(){ 
     try {
         await client.connect();
-        await Publisher.connect();
-        console.log("Engine Connected to server")
+        // await Publisher.connect();
+        console.log("Engine Connected to Redis")
 
         popFromqueue();
     } catch (error) {

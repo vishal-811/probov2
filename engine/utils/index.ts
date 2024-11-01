@@ -1,4 +1,4 @@
-import { Publisher } from "..";
+import { client } from "..";
 import { handleSymbolCreate } from "../controllers/SymbolCreate";
 import { handleCreateUserId } from "../controllers/UserCreate";
 import { handleOnramp } from "../controllers/onramp";
@@ -12,7 +12,7 @@ import { handleAutoMarket } from "../controllers/automarket";
 import type { OrderCancelType, OrderServiceType } from "../types";
 
 export async function publishMessage(uid : string , response : any){
-     await Publisher.publish(uid, JSON.stringify(response));
+     await client.publish(uid, JSON.stringify(response));
      console.log("data being sent to the ws ")
 }
 

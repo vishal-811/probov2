@@ -6,7 +6,7 @@ import type {
   reverseCallType,
   OrderCancelType,
 } from "../types";
-import { Publisher } from "..";
+import { client } from "..";
 import { publishMessage } from "../utils";
 import { v4 as uuidv4 } from "uuid";
 
@@ -78,7 +78,7 @@ export function handleSell(uid: string, data: OrderServiceType) {
     }
     //Put the stock symbol and the  orderbook for that stock symbol in the pub/sub so that the ws server can get it
     //  and broadcast  to all the users.
-    Publisher.publish(
+    client.publish(
       "orderbook",
       JSON.stringify({
         stockSymbol: stockSymbol,
@@ -196,7 +196,7 @@ export function handleBuy(uid: string, data: OrderServiceType) {
           price,
           ORDERBOOK,
         });
-        Publisher.publish(
+        client.publish(
           "orderbook",
           JSON.stringify({
             stockSymbol: stockSymbol,
@@ -221,7 +221,7 @@ export function handleBuy(uid: string, data: OrderServiceType) {
         if (STOCK_BALANCES[userId][stockSymbol][stockType]) {
           STOCK_BALANCES[userId][stockSymbol][stockType].quantity += quantity;
         }
-        Publisher.publish(
+        client.publish(
           "orderbook",
           JSON.stringify({
             stockSymbol: stockSymbol,

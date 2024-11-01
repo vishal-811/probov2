@@ -6,8 +6,12 @@ import  { createClient }  from 'redis'
 app.use(express.json());
 app.use(cors());
 
-export const client = createClient();
-export const Subscriber = createClient();
+export const client = createClient({
+     url : "redis://redis:6379"
+});
+export const Subscriber = createClient({
+      url : "redis://redis:6379"
+});
 
 app.use('/',allRoutes);
 
@@ -17,7 +21,7 @@ async function startServer(){
         await Subscriber.connect();
         console.log("Connected to reddis");
     } catch (error) {
-        console.log(error);
+        console.log(error); 
     }
 
     app.listen(3000,()=>{
