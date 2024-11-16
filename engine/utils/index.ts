@@ -13,7 +13,7 @@ import type { OrderCancelType, OrderServiceType } from "../types";
 
 export async function publishMessage(uid : string , response : any){
      await client.publish(uid, JSON.stringify(response));
-     console.log("data being sent to the ws ")
+    //  console.log("data being sent to the ws ")
 }
 
 export function handleMethod(method : string , uid : string, data: string | object  ){

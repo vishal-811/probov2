@@ -28,6 +28,5 @@ async function handleCryptoMarket(marketSymbol: any, uid: string) {
   const url = `https://api.coingecko.com/api/v3/simple/price?ids=${marketSymbol}&vs_currencies=inr`;
   const data = await fetch(url);
   const price = await data.json();
-  console.log("1234fghjkl");
   publishMessage(`channel_${uid}`, price);
 }

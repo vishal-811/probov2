@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post('/inr',async(req,res)=>{
     const { amount , userId} = req.body;
+    console.log("the user Id is", userId);
     const uid = randomId();
     const data  = {method :'onramp', uid: uid, data: {amount : amount, userId : userId} };
     try {

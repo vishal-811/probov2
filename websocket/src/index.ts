@@ -2,16 +2,17 @@ import WebSocket, {  WebSocketServer } from "ws";
 import http from 'http';
 import { createClient } from 'redis';
 
-// const server = http.createServer(function (request,response){
-//      response.end("Hi there");
-// })
+const server = http.createServer(function (request,response){
+     response.end("Hi there");
+})
 
 const subscriptions :{
     stockSymbol : string,
     subscribers : WebSocket[]
 }[] = [];
 
-const wss = new WebSocketServer({port: 8080});
+
+const wss = new WebSocketServer({server});
 
 const client = createClient({
     url : "redis://redis:6379"
@@ -42,7 +43,7 @@ function handleWebsocketMessage(message : any, ws : WebSocket){
         subscription = {stockSymbol : stockSymbol, subscribers :[]};
         subscriptions.push(subscription);
        }
-       subscription.subscribers.push(ws);
+       subscription.subscribers.push(ws)
    }
    else if( type === 'unsubscribe'){
     let subscription = findSubscription(stockSymbol);
@@ -60,7 +61,6 @@ async function sendOrderBookData(stockSymbol : string, orderbook : object){
         const subscription = findSubscription(stockSymbol);
          if(subscription){
         subscription.subscribers.forEach(client =>{
-            
              if(client.readyState === WebSocket.OPEN){
                 client.send(JSON.stringify(orderbook));
              }
@@ -80,9 +80,12 @@ function handleCloseEvent(ws : WebSocket){  // remove the user from all the Stoc
 }
 
 wss.on('connection', (ws)=>{
+     console.log("a")
     ws.on('error', console.error)
     ws.on('message' ,(message)=>{
+        console.log("b");
         handleWebsocketMessage(message, ws);
+        console.log("c");
     })
 
     ws.on('close', ()=> handleCloseEvent(ws))
@@ -105,9 +108,9 @@ async function startServer(){
      console.log("failed to connect to redis erorrrrr")
   }
   
-//   server.listen(3002, ()=>{
-//      console.log("ws is listen on port 3002");
-//   })
+  server.listen(8080, ()=>{
+     console.log("ws is listen on port 8080");
+  })
 }
 
 startServer();

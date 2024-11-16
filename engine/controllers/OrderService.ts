@@ -95,7 +95,8 @@ export function handleSell(uid: string, data: OrderServiceType) {
 // Odrer to buy
 export function handleBuy(uid: string, data: OrderServiceType) {
   try {
-    const { stockSymbol, stockType, userId, quantity, price } = data;
+    let { stockSymbol, stockType, userId, quantity, price } = data;
+    console.log("The price inside the engine is", price);
 
     if (!stockSymbol || !stockType || !userId || !quantity || !price) {
       throw new Error("please provide all the fields");
@@ -116,11 +117,11 @@ export function handleBuy(uid: string, data: OrderServiceType) {
     if (!ORDERBOOK[stockSymbol]) {
       ORDERBOOK[stockSymbol] = { yes: {}, no: {} };
     }
-
+    
     if (!ORDERBOOK[stockSymbol][stockType][price]) {
       ORDERBOOK[stockSymbol][stockType][price] = { total: 0, orders: {} };
     }
-
+     
     if (ORDERBOOK[stockSymbol][stockType][price].total == 0) {
       handlereverseCall({
         stockSymbol,
@@ -132,6 +133,13 @@ export function handleBuy(uid: string, data: OrderServiceType) {
       });
       const amount = price * quantity;
       INR_BALANCES[userId].balance -= amount;
+      client.publish(
+        "orderbook",
+        JSON.stringify({
+          stockSymbol: stockSymbol,
+          orderbook: ORDERBOOK[stockSymbol],
+        })
+      );
       publishMessage(`channel_${uid}`, "partial order placed 1");
       return;
     }
@@ -167,7 +175,7 @@ export function handleBuy(uid: string, data: OrderServiceType) {
 
             INR_BALANCES[sellerId].locked -= amount;
             if (STOCK_BALANCES[sellerId][stockSymbol][stockReverseType]) {
-              STOCK_BALANCES[sellerId][stockSymbol][
+                STOCK_BALANCES[sellerId][stockSymbol][
                 stockReverseType
               ].quantity += quantity;
             }
@@ -251,7 +259,7 @@ function handlereverseCall({
     price = parseInt(price);
   }
   const correspondingPrice = 10 - price;
-  const reverseStockType = stockType === "yes" ? "yes" : "no";
+  const reverseStockType = stockType === "yes" ? "no" : "yes";
   if (!ORDERBOOK[stockSymbol]) {
     ORDERBOOK[stockSymbol] = { yes: {}, no: {} };
   }
