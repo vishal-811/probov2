@@ -17,14 +17,14 @@ const Navbar = () => {
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
-    
     if (userId) {
         setIsloggedin(true)    
         async function fetchBalance() {
         const res = await axios.get(
           `http://localhost:3000/balance/inr/${userId}`
         );
-        const bal =(res.data.msg);
+        const walBal = JSON.parse(res.data.msg)
+        const bal =walBal.balance;
         setWalletBalance(bal);
       }
 
@@ -39,16 +39,17 @@ const Navbar = () => {
     <div>
       <div className="bg-[#f5f5f5] border-b border-[#e3e3e3] flex justify-between items-center p-4 md:px-12 w-auto max-w-full">
         <button onClick={() => navigate("/")}>
-          <img src={logo} alt="Probo logo" />
+          <img src={logo} width={96} height={96} alt="Probologo" />
         </button>
 
         <div className="flex items-center space-x-4">
-          <span className="text-gray-600 text-sm text-wrap hidden md:block">
-            For 18 years and above only
-          </span>
+        <span className="text-gray-600 text-sm hidden md:block relative group">
+           <span className="absolute -left-1 top-1/2 w-2 h-2 bg-red-500 rounded-full transform -translate-y-1/2 animate-pulse"/>
+           <span className="pl-3">For 18 years and above only</span>
+        </span>
 
           {/* Wallet Section */}
-          <div className="flex items-center md:space-x-3 space-x-1 bg-white shadow-md rounded-lg md:px-3 md:py-2 px-3 py-1 border border-zinc-300 cursor-pointer">
+          <button onClick={()=>navigate('/wallet')} className="flex items-center md:space-x-3 space-x-1 bg-white shadow-md rounded-lg md:px-3 md:py-2 px-3 py-1 border border-zinc-300 cursor-pointer">
             <img
               alt="wallet"
               src="https://d39axbyagw7ipf.cloudfront.net/icons/wallet.svg"
@@ -57,7 +58,7 @@ const Navbar = () => {
             <span className="text-sm sm:text-xs font-semibold text-gray-800 select-none ps-2 pe-2">
               ₹{walletBalance|| 0}
             </span>
-          </div>
+          </button>
 
           <div>
             {isloggedin ? (

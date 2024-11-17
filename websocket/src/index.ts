@@ -80,12 +80,9 @@ function handleCloseEvent(ws : WebSocket){  // remove the user from all the Stoc
 }
 
 wss.on('connection', (ws)=>{
-     console.log("a")
     ws.on('error', console.error)
     ws.on('message' ,(message)=>{
-        console.log("b");
         handleWebsocketMessage(message, ws);
-        console.log("c");
     })
 
     ws.on('close', ()=> handleCloseEvent(ws))

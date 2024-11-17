@@ -96,8 +96,6 @@ export function handleSell(uid: string, data: OrderServiceType) {
 export function handleBuy(uid: string, data: OrderServiceType) {
   try {
     let { stockSymbol, stockType, userId, quantity, price } = data;
-    console.log("The price inside the engine is", price);
-
     if (!stockSymbol || !stockType || !userId || !quantity || !price) {
       throw new Error("please provide all the fields");
     }
@@ -117,12 +115,12 @@ export function handleBuy(uid: string, data: OrderServiceType) {
     if (!ORDERBOOK[stockSymbol]) {
       ORDERBOOK[stockSymbol] = { yes: {}, no: {} };
     }
-    
+
     if (!ORDERBOOK[stockSymbol][stockType][price]) {
       ORDERBOOK[stockSymbol][stockType][price] = { total: 0, orders: {} };
     }
-     
-    if (ORDERBOOK[stockSymbol][stockType][price].total == 0) {
+
+    if (ORDERBOOK[stockSymbol][stockType][price].total === 0) {
       handlereverseCall({
         stockSymbol,
         stockType,
@@ -155,30 +153,32 @@ export function handleBuy(uid: string, data: OrderServiceType) {
         )
           break;
         orders.map((order) => {
-          const availableQuantity = Math.min(order.quantity, requiredQuantity);
+          let availableQuantity = Math.min(order.quantity, requiredQuantity);
+          if (order.quantity === requiredQuantity) {
+            availableQuantity = requiredQuantity;
+          }
           if (order.orderType === "original") {
             order.quantity -= availableQuantity;
             requiredQuantity -= availableQuantity;
             ORDERBOOK[stockSymbol][stockType][price].total -= availableQuantity;
             const amount = price * availableQuantity;
             INR_BALANCES[sellerId].balance += amount;
-            INR_BALANCES[userId].balance -= amount;
-
             if (STOCK_BALANCES[sellerId][stockSymbol][stockType]) {
               STOCK_BALANCES[sellerId][stockSymbol][stockType].locked -=
                 availableQuantity;
             }
           } else {
-            requiredQuantity -= order.quantity;
-            const stockReverseType = stockType === "yes" ? "no" : "yes";
+            order.quantity -= availableQuantity;
+            requiredQuantity -= availableQuantity;
+            ORDERBOOK[stockSymbol][stockType][price].total -= availableQuantity;
+            // const stockReverseType = stockType === "yes" ? "no" : "yes";
             const amount = quantity * price;
-
-            INR_BALANCES[sellerId].locked -= amount;
-            if (STOCK_BALANCES[sellerId][stockSymbol][stockReverseType]) {
-                STOCK_BALANCES[sellerId][stockSymbol][
-                stockReverseType
-              ].quantity += quantity;
-            }
+            INR_BALANCES[sellerId].locked -= 10 - amount;
+            // if (STOCK_BALANCES[sellerId][stockSymbol][stockReverseType]) {
+            //     STOCK_BALANCES[sellerId][stockSymbol][
+            //     stockReverseType
+            //   ].quantity += quantity;
+            // }
           }
         });
 
@@ -240,7 +240,7 @@ export function handleBuy(uid: string, data: OrderServiceType) {
       }
     }
   } catch (error: any) {
-    publishMessage(`channel_${uid}`, { error: error.message });
+    publishMessage(`channel_${uid}`, { status: "500", error: error.message });
   }
 }
 
@@ -331,20 +331,20 @@ export function handleCancel(uid: string, data: OrderCancelType) {
           STOCK_BALANCES[userId][stockSymbol][stockType].quantity +=
             stockQuantity;
         }
-        flag =true;
+        flag = true;
         order.quantity = 0;
         ORDERBOOK[stockSymbol][stockType][price].total -= stockQuantity;
       }
     });
-     if(flag){
+    if (flag) {
       const filteredOrders = user.filter((order) => order.quantity !== 0);
       ORDERBOOK[stockSymbol][stockType][price].orders[userId] = filteredOrders;
       publishMessage(`channel_${uid}`, "Order canceled successfully");
       return;
-     }
-     publishMessage(`channel_${uid}`, "Wrong OrderId, cancellation failed");
+    }
+    publishMessage(`channel_${uid}`, "Wrong OrderId, cancellation failed");
   } catch (error: any) {
     console.log("Error is ", { error: error.message });
-    publishMessage(`channel_${uid}`, {error : error.message});
+    publishMessage(`channel_${uid}`, { error: error.message });
   }
 }

@@ -47,6 +47,7 @@ export const OrderBuy = ({ balance, stockSymbol }: any) => {
         price:price,
         quantity: quantity,
       });
+      console.log("The response after buying is", res.status);
       if(res.status === 200){
         setWalletBalance(walletBalance - amountRequired);
       }

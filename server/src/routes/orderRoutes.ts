@@ -21,7 +21,6 @@ router.post("/sell", async (req, res) => {
 
 router.post("/buy", async (req, res) => {
   const { userId, stockSymbol, stockType, price, quantity } = req.body;
-  console.log("The price inside a server is", price);
   const uid = randomId();
   const data = {
     method: "order_buy",

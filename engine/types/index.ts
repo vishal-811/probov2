@@ -39,7 +39,7 @@ interface StockDetail {
     locked: number;
   }
   
-  interface StockSide {
+  export interface StockSide {
     yes?: StockDetail;
     no?: StockDetail;
   }

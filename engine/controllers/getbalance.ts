@@ -11,7 +11,7 @@ export function handlegetUserBalance(uid: string, data: string) {
       throw new Error("No user exist with this userId");
     }
 
-    publishMessage(`channel_${uid}`, `${userBalance.balance}`);
+    publishMessage(`channel_${uid}`, `${JSON.stringify(userBalance)}`);
     return;
   } catch (error: any) {
     publishMessage(`channel_${uid}`, { error: error.message });
