@@ -4,6 +4,7 @@ import { OrderBook } from "../components/OrderBook";
 import { OrderBuy } from "../components/OrderBuy";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { Base_Api_Url } from "../lib";
 
 export const MarketPlace = () => {
   const [orderbook, setOrderbook] = useState({});
@@ -13,7 +14,7 @@ export const MarketPlace = () => {
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     async function fetchBalance() {
-      const res = await axios.get(`http://localhost:3000/balance/inr/${userId}`);
+      const res = await axios.get(`${Base_Api_Url}/balance/inr/${userId}`);
       setBalance(res.data.balance);
     }
     fetchBalance();
@@ -21,7 +22,7 @@ export const MarketPlace = () => {
 
   useEffect(() => {
     async function fetchStock() {
-      const res = await axios.post(`http://localhost:3000/orderbook/${stockSymbol}`);
+      const res = await axios.post(`${Base_Api_Url}/orderbook/${stockSymbol}`);
       setOrderbook(res.data.msg);
     }
     fetchStock();

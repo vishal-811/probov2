@@ -5,6 +5,7 @@ import CreateUserPage from "./CreateUser";
 import axios from "axios";
 import { useWalletBalance } from "../store/useWalletBalance";
 import { useAuth } from "../store/useAuth";
+import { Base_Api_Url } from "../lib";
 
 const Navbar = () => {
   // const [userId, setUserId] = useState<string | null>(null);
@@ -21,7 +22,7 @@ const Navbar = () => {
         setIsloggedin(true)    
         async function fetchBalance() {
         const res = await axios.get(
-          `http://localhost:3000/balance/inr/${userId}`
+          `${Base_Api_Url}/balance/inr/${userId}`
         );
         const walBal = JSON.parse(res.data.msg)
         const bal =walBal.balance;

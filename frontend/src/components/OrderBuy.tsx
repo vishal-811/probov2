@@ -3,6 +3,7 @@ import { Plus, Minus, AlertCircle, Wallet } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useWalletBalance } from "../store/useWalletBalance";
+import { Base_Api_Url } from "../lib";
 
 const ControlButton = ({ onClick, icon, disabled }: any) => (
   <button
@@ -40,7 +41,7 @@ export const OrderBuy = ({ balance, stockSymbol }: any) => {
     try {
       const amountRequired = quantity * price;
       if(walletBalance < amountRequired) return;
-      const res = await axios.post("http://localhost:3000/order/buy", {
+      const res = await axios.post(`${Base_Api_Url}/order/buy`, {
         userId: localStorage.getItem("userId"),
         stockSymbol: stockSymbol,
         stockType: selectedOption, // Use the selected option

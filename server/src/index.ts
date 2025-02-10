@@ -7,10 +7,10 @@ app.use(express.json());
 app.use(cors());
 
 export const client = createClient({
-     url : "redis://redis:6379"
+     url : "redis://probov2-redis:6379"
 });
 export const Subscriber = createClient({
-      url : "redis://redis:6379"
+      url : "redis://probov2-redis:6379"
 });
 
 app.use('/',allRoutes);

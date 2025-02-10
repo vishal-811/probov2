@@ -4,6 +4,7 @@ import { useWalletBalance } from "../store/useWalletBalance";
 import { Wallet, Lock, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Base_Api_Url } from "../lib";
 
 export const UserWallet = () => {
   const walletBalance = useWalletBalance((state) => state.walletBalance);
@@ -21,7 +22,7 @@ export const UserWallet = () => {
       try {
         setIsLoading(true);
         const res = await axios.get(
-          `http://localhost:3000/balance/inr/${userId}`
+          `${Base_Api_Url}/balance/inr/${userId}`
         );
         const walBal = JSON.parse(res.data.msg);
         const bal = walBal.locked;

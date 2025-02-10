@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { TrendingUp, Search, ArrowRight, Filter, BarChart2 } from "lucide-react";
+import { Base_Api_Url } from "../lib";
 
 export const AllMarkets = () => {
   const [orderbook, setOrderbook] = useState({});
@@ -11,7 +12,7 @@ export const AllMarkets = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post("http://localhost:3000/orderbook");
+        const response = await axios.post(`${Base_Api_Url}/orderbook`);
         setOrderbook(response.data.msg);
         setIsLoading(false);
       } catch (error) {

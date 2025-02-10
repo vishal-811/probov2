@@ -15,10 +15,10 @@ const subscriptions :{
 const wss = new WebSocketServer({server});
 
 const client = createClient({
-    url : "redis://redis:6379"
+    url : "redis://probov2-redis:6379"
 });
 const subscriber = createClient({
-    url : "redis://redis:6379"
+    url : "redis://probov2-redis:6379"
 });
 
 

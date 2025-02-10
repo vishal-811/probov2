@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useWalletBalance } from "../store/useWalletBalance";
 import { useNavigate } from "react-router-dom";
+import { Base_Api_Url } from "../lib";
 
 export const Recharge = () => {
   const [amount, setAmount] = useState<number | null>(null);
@@ -28,7 +29,7 @@ export const Recharge = () => {
     
     try {
       if (amount) {
-        const res = await axios.post("http://localhost:3000/onramp/inr", {
+        const res = await axios.post(`${Base_Api_Url}/onramp/inr`, {
           userId: userId,
           amount: amount,
         });

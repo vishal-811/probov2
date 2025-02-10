@@ -3,7 +3,7 @@ import { createClient } from 'redis';
 import { handleMethod } from './utils';
 const app = express();
 export const client = createClient({
-    url: "redis://redis:6379"
+    url: "redis://probov2-redis:6379"
 });
 
 async function handleDataFromQueue(response : any){

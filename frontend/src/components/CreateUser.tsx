@@ -3,6 +3,7 @@ import { Sparkles, X, ArrowRight, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Base_Api_Url } from '../lib';
 
 interface CreateUserPageProps {
   onClose: () => void;
@@ -24,7 +25,7 @@ const CreateUserPage = ({ onClose, onAuthaction }: CreateUserPageProps) => {
     setLoading(true);
     try {
       const res = await axios.post(
-        `http://localhost:3000/user/create/${userId}`
+        `${Base_Api_Url}/user/create/${userId}`
       );
       if (res.status === 200) {
         const data = res.data.msg;
