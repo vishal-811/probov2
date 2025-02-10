@@ -25,15 +25,15 @@ jobs:
 
       - name: Build and push probov2-server
         run: |
-          docker build -f ./server/Dockerfile -t vishal811/probov2-server:latest .
+          docker build -f ./server/Dockerfile -t vishal811/probov2-server:latest ./server
           docker push vishal811/probov2-server:latest
       
       - name: Build and push probov2-engine
         run: |
-          docker build -f ./engine/Dockerfile -t vishal811/probov2-engine:latest .
+          docker build -f ./engine/Dockerfile -t vishal811/probov2-engine:latest ./engine
           docker push vishal811/probov2-engine:latest
 
       - name: Build and push probov2-websocket
         run: |
-          docker build -f ./websocket/Dockerfile -t vishal811/probov2-websocket:latest .
+          docker build -f ./websocket/Dockerfile -t vishal811/probov2-websocket:latest ./websocket
           docker push vishal811/probov2-websocket:latest
