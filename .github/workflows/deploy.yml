@@ -1,19 +1,19 @@
 name: CD Pipeline
 
-on: 
+on:
   workflow_run:
     workflows: ["CI Pipeline"]
     types:
       - completed
 
-jobs: 
+jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-      
+
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
@@ -27,7 +27,7 @@ jobs:
         run: |
           docker build -f ./server/Dockerfile -t vishal811/probov2-server:latest ./server
           docker push vishal811/probov2-server:latest
-     
+
       - name: Build and push probov2-engine
         run: |
           docker build -f ./engine/Dockerfile -t vishal811/probov2-engine:latest ./engine
@@ -45,8 +45,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-          
-            # Create network if it doesn't exist
+            # Create Docker network if it doesn't exist
             if [ ! "$(sudo docker network ls | grep probov2-network)" ]; then
               echo "Creating probov2-network"
               sudo docker network create probov2-network
@@ -54,6 +53,12 @@ jobs:
               echo "probov2-network already exists"
             fi
             
+            # Deploy Redis
+            sudo docker pull redis:latest
+            sudo docker stop probov2-redis || true
+            sudo docker rm probov2-redis || true
+            sudo docker run -d --name probov2-redis --network probov2-network -p 6379:6379 redis:latest
+
             # Deploy probov2-server
             sudo docker pull vishal811/probov2-server:latest
             sudo docker stop probov2-server || true
