@@ -36,9 +36,6 @@ jobs:
       - name: Wait for Services to Start
         run: sleep 15
 
-      - name: Print Docker Logs
-        run: docker-compose logs server
-
       - name: Run Health Checks
         run: |
           curl -f http://localhost:3000/health || exit 1
