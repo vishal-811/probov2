@@ -1,4 +1,4 @@
-name: CD Pipeline 
+name: CD Pipeline
 
 on: 
   workflow_run:
@@ -27,7 +27,7 @@ jobs:
         run: |
           docker build -f ./server/Dockerfile -t vishal811/probov2-server:latest ./server
           docker push vishal811/probov2-server:latest
-      
+     
       - name: Build and push probov2-engine
         run: |
           docker build -f ./engine/Dockerfile -t vishal811/probov2-engine:latest ./engine
@@ -37,3 +37,37 @@ jobs:
         run: |
           docker build -f ./websocket/Dockerfile -t vishal811/probov2-websocket:latest ./websocket
           docker push vishal811/probov2-websocket:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+          
+            # Create network if it doesn't exist
+            if [ ! "$(sudo docker network ls | grep probov2-network)" ]; then
+              echo "Creating probov2-network"
+              sudo docker network create probov2-network
+            else
+              echo "probov2-network already exists"
+            fi
+            
+            # Deploy probov2-server
+            sudo docker pull vishal811/probov2-server:latest
+            sudo docker stop probov2-server || true
+            sudo docker rm probov2-server || true
+            sudo docker run -d --name probov2-server --network probov2-network -p 3000:3000 vishal811/probov2-server:latest
+
+            # Deploy probov2-engine
+            sudo docker pull vishal811/probov2-engine:latest
+            sudo docker stop probov2-engine || true
+            sudo docker rm probov2-engine || true
+            sudo docker run -d --name probov2-engine --network probov2-network -p 3001:3001 vishal811/probov2-engine:latest
+
+            # Deploy probov2-websocket
+            sudo docker pull vishal811/probov2-websocket:latest
+            sudo docker stop probov2-websocket || true
+            sudo docker rm probov2-websocket || true
+            sudo docker run -d --name probov2-websocket --network probov2-network -p 8080:8080 vishal811/probov2-websocket:latest
