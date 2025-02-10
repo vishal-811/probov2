@@ -1,0 +1,39 @@
+name: CD Pipeline 
+
+on: 
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs: 
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push probov2-server
+        run: |
+          docker build -f server/Dockerfile -t vishal811/probov2-server:latest .
+          docker push vishal811/probov2-server:latest
+      
+      - name: Build and push probov2-engine
+        run: |
+          docker build -f engine/Dockerfile -t vishal811/probov2-engine:latest .
+          docker push vishal811/probov2-engine:latest
+
+      - name: Build and push probov2-websocket
+        run: |
+          docker build -f websocket/Dockerfile -t vishal811/probov2-websocket:latest .
+          docker push vishal811/probov2-websocket:latest
