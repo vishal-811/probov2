@@ -24,7 +24,7 @@ const ControlButton = ({ onClick, icon, disabled }: any) => (
   </button>
 );
 
-export const OrderBuy = ({ balance, stockSymbol }: any) => {
+export const OrderBuy = ({ stockSymbol }: any) => {
   const [price, setPrice] = useState(0.5);
   const [quantity, setQuantity] = useState(1);
   const [selectedOption, setSelectedOption] = useState("yes"); // State for the selected option
@@ -44,7 +44,7 @@ export const OrderBuy = ({ balance, stockSymbol }: any) => {
       const res = await axios.post(`${Base_Api_Url}/order/buy`, {
         userId: localStorage.getItem("userId"),
         stockSymbol: stockSymbol,
-        stockType: selectedOption, // Use the selected option
+        stockType: selectedOption, 
         price:price,
         quantity: quantity,
       });

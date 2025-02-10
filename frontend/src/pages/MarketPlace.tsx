@@ -28,16 +28,14 @@ export const MarketPlace = () => {
     fetchStock();
 
     const connectWithWs = () => {
-      const socket = new WebSocket("ws://localhost:8080");
+      const socket = new WebSocket("ws://opiniox-ws.vishalsharma.xyz");
       socket.addEventListener("open", () => {
-        console.log("WebSocket connected");
         socket.send(
           JSON.stringify({ type: "subscribe", stockSymbol: stockSymbol })
         );
       });
 
       socket.addEventListener("message", (message) => {
-        console.log("THe data from the websocket looks like", message);
         const data = JSON.parse(message.data);
         setOrderbook(data);
       });
