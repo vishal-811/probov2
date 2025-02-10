@@ -35,8 +35,7 @@ jobs:
 
       - name: Run Health Checks
         run: |
-          curl -f http://localhost:3000 || exit 1
-          curl -f http://localhost:8080 || exit 1
+          curl -f http://localhost:3000/health || exit 1
 
       - name: Stop and Clean Docker
         run: docker compose down

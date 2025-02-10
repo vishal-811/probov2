@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import cors from 'cors';
 const app = express();
 import allRoutes from './routes/index'
@@ -14,6 +14,10 @@ export const Subscriber = createClient({
 });
 
 app.use('/',allRoutes);
+
+app.get("/health",(req:Request, res: Response) => {
+    res.status(200).json({msg :"Ok"});
+})
 
 async function startServer(){
     try {
