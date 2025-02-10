@@ -6,6 +6,7 @@ services:
   server:
     build:
       context: ./server
+    image: vishal811/probov2-server
     container_name: servercontainer
     depends_on:
       - redis
@@ -15,6 +16,7 @@ services:
   engine:
     build:
       context: ./engine
+    image: vishal811/probov2-engine
     container_name: engineContainer
     depends_on:
       - redis
@@ -22,6 +24,7 @@ services:
   websocket:
     build:
       context: ./websocket
+    image: vishal811/probov2-websocket
     container_name: websocketContainer
     depends_on:
       - redis

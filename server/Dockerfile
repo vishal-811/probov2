@@ -1,6 +1,6 @@
-FROM node:20
+FROM node:20-alpine  as builder
 
-WORKDIR /app
+WORKDIR app
 
 COPY package*.json ./
 
@@ -10,4 +10,12 @@ COPY . .
 
 RUN npm run build
 
-CMD ["npm", "run" , "start"]
+
+FROM node:20-alpine  as runner
+
+WORKDIR app
+
+COPY --from=builder /app/node_modules  ./node_modules
+COPY --from=builder /app/dist   ./dist
+
+CMD ["node", "dist/index.js"]
