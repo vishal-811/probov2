@@ -8,9 +8,9 @@ import { UserWallet } from "./pages/UserWallet";
 import LandingPage from "./pages/HomePage";
 
 function App() {
-  return (
-    <div className="max-w-screen min-h-screen bg-[#F5F5F5]">
-      <BrowserRouter>
+  
+  return (   
+ <BrowserRouter>
         <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage/>}/>
@@ -20,7 +20,6 @@ function App() {
           <Route path="/wallet" element={<UserWallet/>}/>
         </Routes>
       </BrowserRouter>
-    </div>
   );
 }
 
