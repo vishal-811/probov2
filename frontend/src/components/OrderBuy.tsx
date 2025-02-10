@@ -27,7 +27,7 @@ const ControlButton = ({ onClick, icon, disabled }: any) => (
 export const OrderBuy = ({ stockSymbol }: any) => {
   const [price, setPrice] = useState(0.5);
   const [quantity, setQuantity] = useState(1);
-  const [selectedOption, setSelectedOption] = useState("yes"); // State for the selected option
+  const [selectedOption, setSelectedOption] = useState("yes");
   const walletBalance = useWalletBalance((state) => state.walletBalance)
   const setWalletBalance = useWalletBalance((state)=> state.setWalletBalance)
   const navigate = useNavigate();
