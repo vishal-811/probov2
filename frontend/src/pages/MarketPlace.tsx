@@ -28,7 +28,7 @@ export const MarketPlace = () => {
     fetchStock();
 
     const connectWithWs = () => {
-      const socket = new WebSocket("ws://opiniox-ws.vishalsharma.xyz");
+      const socket = new WebSocket("wss://opiniox-ws.vishalsharma.xyz");
       socket.addEventListener("open", () => {
         socket.send(
           JSON.stringify({ type: "subscribe", stockSymbol: stockSymbol })
