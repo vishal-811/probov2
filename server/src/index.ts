@@ -23,7 +23,7 @@ async function startServer(){
     try {
         await client.connect();  
         await Subscriber.connect();
-        console.log("Connected to reddis");
+        console.log("Connected to redis");
     } catch (error) {
         console.log(error); 
     }

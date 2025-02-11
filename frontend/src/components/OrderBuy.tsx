@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useWalletBalance } from "../store/useWalletBalance";
 import { Base_Api_Url } from "../lib";
+import { InsufficientBalance } from "./InsufficientBal";
+import { toast } from "sonner";
 
 const ControlButton = ({ onClick, icon, disabled }: any) => (
   <button
@@ -28,8 +30,9 @@ export const OrderBuy = ({ stockSymbol }: any) => {
   const [price, setPrice] = useState(0.5);
   const [quantity, setQuantity] = useState(1);
   const [selectedOption, setSelectedOption] = useState("yes");
-  const walletBalance = useWalletBalance((state) => state.walletBalance)
-  const setWalletBalance = useWalletBalance((state)=> state.setWalletBalance)
+  const [isInsufficientBal, setIsInsufficientBal] = useState<boolean>(false);
+  const walletBalance = useWalletBalance((state) => state.walletBalance);
+  const setWalletBalance = useWalletBalance((state) => state.setWalletBalance);
   const navigate = useNavigate();
 
   const incrementPrice = () => setPrice((prev) => Math.min(prev + 0.5, 9.5));
@@ -40,17 +43,21 @@ export const OrderBuy = ({ stockSymbol }: any) => {
   async function handleOrder() {
     try {
       const amountRequired = quantity * price;
-      if(walletBalance < amountRequired) return;
+      if (walletBalance < amountRequired) {
+        setIsInsufficientBal(true);
+        return;
+      }
       const res = await axios.post(`${Base_Api_Url}/order/buy`, {
         userId: localStorage.getItem("userId"),
         stockSymbol: stockSymbol,
-        stockType: selectedOption, 
-        price:price,
+        stockType: selectedOption,
+        price: price,
         quantity: quantity,
       });
       console.log("The response after buying is", res.status);
-      if(res.status === 200){
+      if (res.status === 200) {
         setWalletBalance(walletBalance - amountRequired);
+        toast.success("Order Placed!")   
       }
     } catch (error) {
       console.error("Error placing order:", error);
@@ -62,12 +69,14 @@ export const OrderBuy = ({ stockSymbol }: any) => {
       <CustomToggleButton
         price={price}
         selectedOption={selectedOption}
-        setSelectedOption={setSelectedOption} // Pass selectedOption and setSelectedOption
+        setSelectedOption={setSelectedOption}
       />
       <div className="mt-6 flex flex-col justify-between bg-gray-50 p-6 rounded-xl gap-y-4">
         {/* Price Control */}
         <div className="flex justify-between items-center group">
-          <p className="text-sm md:text-lg font-semibold text-zinc-900">Price</p>
+          <p className="text-sm md:text-lg font-semibold text-zinc-900">
+            Price
+          </p>
           <div className="flex items-center space-x-4 bg-white px-4 py-2 rounded-lg shadow-sm">
             <ControlButton
               onClick={decrementPrice}
@@ -87,11 +96,13 @@ export const OrderBuy = ({ stockSymbol }: any) => {
 
         {/* Quantity Control */}
         <div className="flex justify-between items-center group">
-          <p className="text-sm md:text-lg font-semibold text-zinc-900">Quantity</p>
+          <p className="text-sm md:text-lg font-semibold text-zinc-900">
+            Quantity
+          </p>
           <div className="flex items-center space-x-4 bg-white px-4 py-2 rounded-lg shadow-sm">
             <ControlButton
               onClick={decrementQuantity}
-              icon={<Minus size={16}/>}
+              icon={<Minus size={16} />}
               disabled={quantity <= 1}
             />
             <span className="w-16 text-center text-lg font-semibold text-zinc-900">
@@ -107,7 +118,9 @@ export const OrderBuy = ({ stockSymbol }: any) => {
         {/* Total */}
         <div className="pt-4 border-t border-gray-200">
           <div className="flex justify-between items-center">
-            <span className="md:text-lg text-sm font-medium text-zinc-900">Total</span>
+            <span className="md:text-lg text-sm font-medium text-zinc-900">
+              Total
+            </span>
             <span className="text-xl font-bold text-blue-600">
               ₹{(price * quantity).toFixed(2)}
             </span>
@@ -141,6 +154,12 @@ export const OrderBuy = ({ stockSymbol }: any) => {
       >
         Place Order
       </button>
+
+      {/* Insufficient Balance Pop up */}
+      <InsufficientBalance
+        isOpen={isInsufficientBal}
+        onClose={() => setIsInsufficientBal(false)}
+      />
     </div>
   );
 };

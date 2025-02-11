@@ -50,11 +50,12 @@ export const OrderBook = ({ data }: any) => {
                 key={`yes-${price}`}
                 price={price}
                 quantity={quantity}
+                maxQuantity={Math.max(...yesOrders.map(o => o.quantity))}
+                type="yes"
               />
             ))}
           </div>
         </div>
-
         {/* NO Orders */}
         <div className="flex flex-col w-[50%]">
           <div className="flex justify-between w-full">
@@ -69,7 +70,9 @@ export const OrderBook = ({ data }: any) => {
               <OrderRow 
                 key={`no-${price}`} 
                 price={price} 
-                quantity={quantity} 
+                quantity={quantity}
+                maxQuantity={Math.max(...noOrders.map(o => o.quantity))}
+                type="no"
               />
             ))}
           </div>
@@ -79,11 +82,29 @@ export const OrderBook = ({ data }: any) => {
   );
 };
 
-const OrderRow = ({ price, quantity }: { price: string; quantity: number }) => {
+const OrderRow = ({ 
+  price, 
+  quantity, 
+  maxQuantity,
+  type 
+}: { 
+  price: string; 
+  quantity: number;
+  maxQuantity: number;
+  type: 'yes' | 'no';
+}) => {
+  const percentWidth = (quantity / maxQuantity) * 100;
+  
   return (
-    <div className="flex border-t border-zinc-300 justify-between p-1">
-      <p className="text-sm font-semibold text-zinc-800">{price}</p>
-      <p className="text-sm font-semibold text-zinc-800">{quantity}</p>
+    <div className="flex border-t border-zinc-300 justify-between p-1 relative">
+      <div 
+        className={`absolute top-0 bottom-0 ${type === 'yes' ? 'left-0 bg-blue-100' : 'right-0 bg-red-100'}`}
+        style={{ width: `${percentWidth}%` }}
+      />
+      <p className="text-sm font-semibold text-zinc-800 relative z-10">{price}</p>
+      <p className="text-sm font-semibold text-zinc-800 relative z-10">{quantity}</p>
     </div>
   );
 };
+
+export default OrderBook;
