@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import logo from "../assets/logo.avif";
 import { useNavigate } from "react-router-dom";
 import CreateUserPage from "./CreateUser";
 import axios from "axios";
